@@ -1,12 +1,12 @@
 databases:
- - name: joynotes
+ - name: foink
    region: frankfurt
-   databaseName: joynotes_db
-   user: joynotes_backend
+   databaseName: foink_db
+   user: foink_backend
 
 services:
  - type: web
-   name: joynotes-backend
+   name: foink-backend
    region: frankfurt
    branch: master
    healthCheckPath: /health
@@ -16,7 +16,7 @@ services:
    envVars:
      - key: DATABASE_URL
        fromDatabase:
-         name: joynotes
+         name: foink
          property: connectionString
      - key: SECRET_KEY
        generateValue: true

@@ -22,6 +22,7 @@ from django.urls import (
 from django.views.generic.base import TemplateView
 
 from accounts import views as account_views
+from authorities import views as authorities_views
 from notes import views as note_views
 from proxy import views as proxy_views
 
@@ -32,6 +33,11 @@ urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),
     path('', TemplateView.as_view(template_name='index.html'), name='index'),
 
+    url(
+        r'api/authorities/search/$',
+        authorities_views.AuthoritySearch.as_view(),
+        name='api-authorities-search',
+    ),
     url(
         r'api/signin/$',
         account_views.EmailSignIn.as_view(),

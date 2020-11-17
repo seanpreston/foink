@@ -19,5 +19,17 @@ class AuthoritySearch(APIView):
     authentication_classes = settings.NO_CSRF_AUTH_CLASSES
 
     def post(self, request, *args, **kwargs):
-        data = json.dumps({})
+        term = request.data.get('term', '')
+
+        # TODO: Find matches
+
+        data = json.loads({
+            'results': [],
+            'paging_info': {
+                'total_results': 20,
+                'offset': 0,
+                'limit': 20,
+                'next_offset': 0,
+            },
+        })
         return Response(data, status=status.HTTP_202_ACCEPTED)

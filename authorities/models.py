@@ -20,6 +20,9 @@ class Authority(BaseModel):
         null=True,
     )
 
+    def __str__(self):
+        return self.name
+
     def get_serialized(self):
         return {
             'created_at': self.created_at,

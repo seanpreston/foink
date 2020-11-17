@@ -177,17 +177,17 @@ if not DEBUG:
 # CORS_REPLACE_HTTPS_REFERER = True
 CORS_ALLOW_ALL_ORIGINS = True
 
-# CORS_ORIGIN_WHITELIST = [
-#     'http://localhost:8000',
-#     # 'http://localhost:3000',
-#     # 'https://flight-search-frontend.onrender.com/',
-# ]
+CORS_ORIGIN_WHITELIST = [
+    'http://localhost:8000',
+    'http://localhost:3000',
+    # 'https://flight-search-frontend.onrender.com/',
+]
 
-# CSRF_TRUSTED_ORIGINS = [
-#     'localhost:8000',
-#     # 'localhost:3000',
-#     # 'https://flight-search-frontend.onrender.com/',
-# ]
+CSRF_TRUSTED_ORIGINS = [
+    'localhost:8000',
+    'localhost:3000',
+    # 'https://flight-search-frontend.onrender.com/',
+]
 
 
 # Django REST Framework

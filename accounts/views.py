@@ -28,13 +28,13 @@ class EmailSignUp(APIView):
         email = request.data.get('email', '')
         password = request.data.get('password')
 
-        # try:
-        #     validate_email(email)
-        # except ValidationError:
-        #     return Response(
-        #         {'email': ['Please supply a valid email']},
-        #         status=status.HTTP_400_BAD_REQUEST,
-        #     )
+        try:
+            validate_email(email)
+        except ValidationError:
+            return Response(
+                {'email': ['Please supply a valid email']},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         if not password:
             return Response(

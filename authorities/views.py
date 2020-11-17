@@ -23,7 +23,7 @@ class AuthoritySearch(APIView):
 
         # TODO: Find matches
 
-        data = json.loads({
+        data = {
             'results': [],
             'paging_info': {
                 'total_results': 20,
@@ -31,5 +31,5 @@ class AuthoritySearch(APIView):
                 'limit': 20,
                 'next_offset': 0,
             },
-        })
+        }
         return Response(data, status=status.HTTP_202_ACCEPTED)

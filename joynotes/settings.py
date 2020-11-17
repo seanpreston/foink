@@ -34,6 +34,7 @@ DEBUG = 'RENDER' not in os.environ
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
+    'foink.test.stotles.com/',
 ]
 
 RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
@@ -181,12 +182,14 @@ CORS_ALLOW_ALL_ORIGINS = True
 CORS_ORIGIN_WHITELIST = [
     'http://localhost:8000',
     'http://localhost:3000',
+    'https://foink.test.stotles.com/',
     # 'https://flight-search-frontend.onrender.com/',
 ]
 
 CSRF_TRUSTED_ORIGINS = [
     'localhost:8000',
     'localhost:3000',
+    'https://foink.test.stotles.com/',
     # 'https://flight-search-frontend.onrender.com/',
 ]
 

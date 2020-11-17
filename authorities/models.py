@@ -15,6 +15,10 @@ class Authority(BaseModel):
         null=False,
         validators=[validate_email]
     )
+    category = models.CharField(
+        max_length=2048,
+        null=True,
+    )
 
     def get_serialized(self):
         return {
@@ -22,4 +26,5 @@ class Authority(BaseModel):
             'modified_at': self.modified_at,
             'uuid': self.uuid,
             'name': self.name,
+            'category': self.category,
         }

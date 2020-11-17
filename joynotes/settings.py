@@ -189,7 +189,7 @@ CORS_ORIGIN_WHITELIST = [
 CSRF_TRUSTED_ORIGINS = [
     'localhost:8000',
     'localhost:3000',
-    'https://foink.test.stotles.com/',
+    'foink.test.stotles.com',
     # 'https://flight-search-frontend.onrender.com/',
 ]
 

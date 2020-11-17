@@ -21,10 +21,13 @@ class AuthoritySearch(APIView):
     def post(self, request, *args, **kwargs):
         term = request.data.get('term', '')
 
-        # TODO: Find matches
+        qs = Authority.objects.filter(name__icontains=term)[:20]
+        results = []
+        for authority in qs:
+            results.append(authority.get_serialized())
 
         data = {
-            'results': [],
+            'results': results,
             'paging_info': {
                 'total_results': 20,
                 'offset': 0,

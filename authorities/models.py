@@ -30,4 +30,5 @@ class Authority(BaseModel):
             'uuid': self.uuid,
             'name': self.name,
             'category': self.category,
+            'id': self.id,
         }

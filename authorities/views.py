@@ -60,7 +60,7 @@ class SendFoi(APIView):
             print(response.headers)
         except Exception as e:
             print(e.message)
-        return Response(status=status.HTTP_202_ACCEPTED)
+        return Response({"success": True}, status=status.HTTP_202_ACCEPTED)
 
 
 class AuthoritySearch(APIView):

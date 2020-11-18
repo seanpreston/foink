@@ -28,6 +28,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECRET_KEY = 'xv9xt@2tan9p%i-#8r5d_w5i77@)ev66u47sv!_mu1-8tgz9b*'
 SECRET_KEY = os.environ.get('SECRET_KEY', default='your secret key')
 
+SENDGRID_API_KEY = os.environ.get('SENDGRID_API_GET', default='')
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = 'RENDER' not in os.environ
 

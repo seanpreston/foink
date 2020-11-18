@@ -1,6 +1,7 @@
 import json
 
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from sendgrid import SendGridAPIClient
@@ -13,12 +14,16 @@ from django.contrib.auth import (
     login,
 )
 
+from accounts.utils import CsrfExemptTokenAuth
+
 from .models import Authority
 
 
 class SendFoi(APIView):
 
-    authentication_classes = settings.NO_CSRF_AUTH_CLASSES
+    # authentication_classes = settings.NO_CSRF_AUTH_CLASSES
+    authentication_classes = (CsrfExemptTokenAuth, )
+    permission_classes = (IsAuthenticated,)
 
     def post(self, request, *args, **kwargs):
         # subject = request.data['subject']
@@ -30,8 +35,6 @@ class SendFoi(APIView):
             authority = Authority.objects.get(id=authority_id)
         except Authority.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
-
-        return Response({"success": True}, status=status.HTTP_202_ACCEPTED)
 
         recipients = [
             'bianca@stotles.com',

@@ -24,7 +24,8 @@ class SendFoi(APIView):
         # subject = request.data['subject']
         content = request.data['emailContent']
         email_from = request.data['sender']
-        authority_id = request.data['recipient']
+        recipients = request.data['recipient']
+        authority_id = recipients[0]
         try:
             authority = Authority.objects.get(id=authority_id)
         except Authority.DoesNotExist:

@@ -29,26 +29,11 @@ class SendFoi(APIView):
             content = request.data['emailContent']
             email_from = request.data['sender']
             recipients = request.data['recipients']
-            authority_id = recipients[0]
         except (KeyError, IndexError):
             return Response(
                 {"message": "emailContent, sender, recipients fields are all required"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
-
-        try:
-            authority = Authority.objects.get(id=authority_id)
-        except Authority.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-
-        recipients = [
-            'bianca@stotles.com',
-            'sean@stotles.com',
-            'taj@stotles.com',
-        ]
-        # if settings.ENV == settings.ENV_KEY_PROD:
-        #     # Only send to actual people in production
-        #     recipients = [authority.email]
 
         split = content.split('\n')
         formatted = ""
@@ -56,21 +41,46 @@ class SendFoi(APIView):
             formatted += '<p>{}</p>'.format(segment)
 
         subject = "Freedom of Information Act - Request"
-        message = Mail(
-            from_email=email_from,
-            to_emails=recipients,
-            subject=subject,
-            html_content=formatted,
-        )
-        try:
-            sg = SendGridAPIClient(settings.SENDGRID_API_KEY)
-            response = sg.send(message)
-            print(response.status_code)
-            print(response.body)
-            print(response.headers)
-        except Exception as e:
-            print(e.message)
-        return Response({"success": True}, status=status.HTTP_202_ACCEPTED)
+
+        recipient_emails = []
+        failures = []
+        for authority_id in recipients:
+            try:
+                authority = Authority.objects.get(id=authority_id)
+            except Authority.DoesNotExist:
+                failures.append(authority_id)
+            else:
+                # if settings.ENV == settings.ENV_KEY_PROD:
+                #     # Only send to actual people in production
+                #     recipient_emails.append(authority.email)
+                pass
+
+        recipient_emails = [
+            'bianca@stotles.com',
+            'sean@stotles.com',
+            'taj@stotles.com',
+        ]
+        sg = SendGridAPIClient(settings.SENDGRID_API_KEY)
+        for recipient in recipient_emails:
+            message = Mail(
+                from_email=email_from,
+                to_emails=[recipient],
+                subject=subject,
+                html_content=formatted,
+            )
+            try:
+                response = sg.send(message)
+                print(response.status_code)
+                print(response.body)
+                print(response.headers)
+            except Exception as e:
+                print(e.message)
+                failures.append(authority_id)
+
+        return Response({
+            "success": True,
+            "failures": failures,
+        }, status=status.HTTP_202_ACCEPTED)
 
 
 class AuthoritySearch(APIView):

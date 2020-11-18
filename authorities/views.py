@@ -21,16 +21,21 @@ from .models import Authority
 
 class SendFoi(APIView):
 
-    # authentication_classes = settings.NO_CSRF_AUTH_CLASSES
     authentication_classes = (CsrfExemptTokenAuth, )
     permission_classes = (IsAuthenticated,)
 
     def post(self, request, *args, **kwargs):
-        # subject = request.data['subject']
-        content = request.data['emailContent']
-        email_from = request.data['sender']
-        recipients = request.data['recipients']
-        authority_id = recipients[0]
+        try:
+            content = request.data['emailContent']
+            email_from = request.data['sender']
+            recipients = request.data['recipients']
+            authority_id = recipients[0]
+        except (KeyError, IndexError):
+            return Response(
+                {"message": "emailContent, sender, recipients fields are all required"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
         try:
             authority = Authority.objects.get(id=authority_id)
         except Authority.DoesNotExist:

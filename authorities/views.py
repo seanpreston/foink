@@ -1,5 +1,9 @@
+from http.cookiejar import CookieJar
 import json
+import requests
 
+from bs4 import BeautifulSoup
+import mechanize
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -23,26 +27,75 @@ class SearchFoi(APIView):
 
     authentication_classes = settings.NO_CSRF_AUTH_CLASSES
 
-    def post(self, request, *args, **kwargs):
-        authority_name = request.data['authority_name']
-        term = request.data.get('term', '')
-
-        results = [
-            {
-                "title": {
-                    "text": "Low traffic neighbourhood correspondence",
-                    "url": "https://www.whatdotheyknow.com/request/low_traffice_neighbourhood_corre_21#incoming-1670495"
-                },
-                "response_from": {
-                    "text": "Redbridge Borough Council",
-                    "url": "https://www.whatdotheyknow.com/body/redbridge_borough_council"
-                },
-                "response_to": {
-                    "text": "Ben Rymer",
-                    "url": "https://www.whatdotheyknow.com/user/ben_rymer"
-                }
-            }
+    def _get_browser(self):
+        browser = mechanize.Browser()
+        cookie_jar = CookieJar()
+        browser.set_cookiejar(cookie_jar)
+        browser.set_handle_robots(False)
+        browser.addheaders = [
+            (
+                'User-agent',
+                'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.0.1) Gecko/2008071615 Fedora/3.0.1-1.fc9 Firefox/3.0.1',
+            )
         ]
+        return browser
+
+    def post(self, request, *args, **kwargs):
+        authority_name = request.data.get('authority_name', '')
+        terms = request.data.get('terms', [])
+
+        WDTK_BASE = 'https://www.whatdotheyknow.com'
+        SEARCH_BASE_URL = WDTK_BASE + '/list/successful?utf8=%E2%9C%93'
+        formatted_terms = authority_name + ' ' + '+'.join(terms)
+        formatted_terms = formatted_terms.replace(" ", "%20")
+        params = '&query={}&request_date_after=&request_date_before=&commit=Search'.format(formatted_terms)
+        search_url = SEARCH_BASE_URL + params
+
+
+        print("SEARCHING: " + search_url)
+        browser = self._get_browser()
+        res = browser.open(search_url)
+        content = res.read()
+        soup = BeautifulSoup(content)
+        listings = soup.find_all("div", {"class": "request_listing"})
+
+        results = []
+        for listing in listings[:3]:
+            links = listing.find_all("a", href=True)
+            title = {
+                "text": links[0].text,
+                "url": WDTK_BASE + links[0]['href'],
+            }
+            response_from = {
+                "text": links[1].text,
+                "url": links[1]['href'],
+            }
+            response_to = {
+                "text": links[2].text,
+                "url": links[2]['href'],
+            }
+            results.append({
+                "title": title,
+                "response_from": response_from,
+                "response_to": response_to,
+            })
+
+        # results = [
+        #     {
+        #         "title": {
+        #             "text": "Low traffic neighbourhood correspondence",
+        #             "url": "https://www.whatdotheyknow.com/request/low_traffice_neighbourhood_corre_21#incoming-1670495"
+        #         },
+        #         "response_from": {
+        #             "text": "Redbridge Borough Council",
+        #             "url": "https://www.whatdotheyknow.com/body/redbridge_borough_council"
+        #         },
+        #         "response_to": {
+        #             "text": "Ben Rymer",
+        #             "url": "https://www.whatdotheyknow.com/user/ben_rymer"
+        #         }
+        #     }
+        # ]
 
         data = {
             'results': results,

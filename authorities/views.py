@@ -19,6 +19,43 @@ from accounts.utils import CsrfExemptTokenAuth
 from .models import Authority
 
 
+class SearchFoi(APIView):
+
+    authentication_classes = settings.NO_CSRF_AUTH_CLASSES
+
+    def post(self, request, *args, **kwargs):
+        authority_name = request.data['authority_name']
+        term = request.data.get('term', '')
+
+        results = [
+            {
+                "title": {
+                    "text": "Low traffic neighbourhood correspondence",
+                    "url": "https://www.whatdotheyknow.com/request/low_traffice_neighbourhood_corre_21#incoming-1670495"
+                },
+                "response_from": {
+                    "text": "Redbridge Borough Council",
+                    "url": "https://www.whatdotheyknow.com/body/redbridge_borough_council"
+                },
+                "response_to": {
+                    "text": "Ben Rymer",
+                    "url": "https://www.whatdotheyknow.com/user/ben_rymer"
+                }
+            }
+        ]
+
+        data = {
+            'results': results,
+            'paging_info': {
+                'total_results': 20,
+                'offset': 0,
+                'limit': 20,
+                'next_offset': 0,
+            },
+        }
+        return Response(data, status=status.HTTP_202_ACCEPTED)
+
+
 class SendFoi(APIView):
 
     authentication_classes = (CsrfExemptTokenAuth, )

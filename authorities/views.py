@@ -45,12 +45,17 @@ class SendFoi(APIView):
         #     # Only send to actual people in production
         #     recipients = [authority.email]
 
+        split = content.split('\n')
+        formatted = ""
+        for segment in split:
+            formatted += '<p>{}</p>'.format(segment)
+
         subject = "Freedom of Information Act - Request"
         message = Mail(
             from_email=email_from,
             to_emails=recipients,
             subject=subject,
-            html_content=content,
+            html_content=formatted,
         )
         try:
             sg = SendGridAPIClient(settings.SENDGRID_API_KEY)

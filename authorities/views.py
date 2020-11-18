@@ -24,7 +24,7 @@ class SendFoi(APIView):
         # subject = request.data['subject']
         content = request.data['emailContent']
         email_from = request.data['sender']
-        recipients = request.data['recipient']
+        recipients = request.data['recipients']
         authority_id = recipients[0]
         try:
             authority = Authority.objects.get(id=authority_id)

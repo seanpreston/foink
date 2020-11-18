@@ -39,6 +39,11 @@ urlpatterns = [
         name='api-authorities-search',
     ),
     url(
+        r'api/foi/send/$',
+        authorities_views.SendFoi.as_view(),
+        name='api-foi-send',
+    ),
+    url(
         r'api/signin/$',
         account_views.EmailSignIn.as_view(),
         name='api-email-signin',

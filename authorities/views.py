@@ -125,7 +125,7 @@ class SendFoi(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        content = content.replace('\n\n', '</ br>')
+        content = content.replace('\n\n', '<br>')
         split = content.split('\n')
         formatted = ""
         for segment in split:

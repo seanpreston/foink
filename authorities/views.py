@@ -20,7 +20,10 @@ from django.contrib.auth import (
 
 from accounts.utils import CsrfExemptTokenAuth
 
-from .models import Authority
+from .models import (
+    Authority,
+    FOIRequest,
+)
 
 
 class SearchFoi(APIView):
@@ -126,11 +129,6 @@ class SendFoi(APIView):
             )
 
         formatted = content.replace('\n', '<br>')
-        # split = content.split('\n')
-        # formatted = ""
-        # for segment in split:
-        #     formatted += '<p>{}</p>'.format(segment)
-
         subject = "Freedom of Information Act - Request"
 
         recipient_emails = []
@@ -167,6 +165,15 @@ class SendFoi(APIView):
             except Exception as e:
                 print(e.message)
                 failures.append(authority_id)
+            else:
+                try:
+                    FOIRequest.objects.create(
+                        text=formatted,
+                        recipient=recipient,
+                        sender=email_from
+                    )
+                except Exception:
+                    pass
 
         return Response({
             "success": True,
